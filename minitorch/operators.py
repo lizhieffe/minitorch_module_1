@@ -31,17 +31,17 @@ def add(a: float, b: float) -> float:
 
 # - neg
 def neg(a: float) -> float:
-    return -1 * a
+    return -1.0 * a
 
 
 # - lt
 def lt(a: float, b: float) -> float:
-    return a < b
+    return 1.0 if a < b else 0.0
 
 
 # - eq
 def eq(a, b):
-    return a == b
+    return 1.0 if a == b else 0.0
 
 
 # - max
@@ -67,7 +67,7 @@ def relu(a):
     if a > 0:
         return a
     else:
-        return 0
+        return 0.0
 
 
 # - log
