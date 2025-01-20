@@ -173,7 +173,6 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
-
         inputs = h.inputs
         derivs = h.last_fn.backward(h.ctx, d_output)
         return [(input, deriv) for input, deriv in zip(inputs, derivs)]
