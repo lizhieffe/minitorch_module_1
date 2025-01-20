@@ -158,13 +158,25 @@ class Scalar:
         return self.history.inputs
 
     def chain_rule(self, d_output: Any) -> Iterable[Tuple[Variable, Any]]:
+        """Implement the backprop chain rule.
+
+        Args:
+          d_output: the derivative backprop from the next layer.
+
+        Returns:
+          The element tuple [0] is the input Scalar of the current node, [1] is 
+          the derivative to backprop to the earlier layer. The order of each
+          element is the same order of the inputs to the current node.
+        """
         h = self.history
         assert h is not None
         assert h.last_fn is not None
         assert h.ctx is not None
 
-        # TODO: Implement for Task 1.3.
-        raise NotImplementedError("Need to implement for Task 1.3")
+
+        inputs = h.inputs
+        derivs = h.last_fn.backward(h.ctx, d_output)
+        return [(input, deriv) for input, deriv in zip(inputs, derivs)]
 
     def backward(self, d_output: Optional[float] = None) -> None:
         """

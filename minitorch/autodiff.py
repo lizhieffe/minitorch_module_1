@@ -95,6 +95,9 @@ class Context:
     """
 
     no_grad: bool = False
+
+    # Note, the saved_vallues here are the **raw value** of the local inputs.
+    # The Scalar.history.inputs are the **Scalars** of the inputs.
     saved_values: Tuple[Any, ...] = ()
 
     def save_for_backward(self, *values: Any) -> None:
