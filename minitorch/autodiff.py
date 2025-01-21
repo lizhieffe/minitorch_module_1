@@ -59,6 +59,15 @@ class Variable(Protocol):
         pass
 
 
+
+def dfs(variable: Variable, order: list[Variable], visited: set[int]) -> None:
+    visited.add(variable.unique_id)
+    for p in variable.parents:
+        if not p.unique_id in visited:
+            dfs(p, order, visited)
+
+    order.append(variable)
+
 def topological_sort(variable: Variable) -> Iterable[Variable]:
     """
     Computes the topological order of the computation graph.
@@ -69,8 +78,11 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    order = []
+    visited = set()
+    dfs(variable, order, visited)
+
+    return reversed(order)
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -84,8 +96,24 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    order = list(topological_sort(variable))
+
+    acc_derivs = {variable.unique_id: deriv}
+
+    for v in order:
+      # if v.is_constant():
+      #   continue
+      v_deriv = acc_derivs[v.unique_id]
+      if v.is_leaf():
+        v.accumulate_derivative(v_deriv)
+        continue
+
+      parents_and_derivs = v.chain_rule(v_deriv)
+      for p, p_deriv in parents_and_derivs:
+        if p.unique_id in acc_derivs:
+          acc_derivs[p.unique_id] += p_deriv
+        else:
+          acc_derivs[p.unique_id] = p_deriv
 
 
 @dataclass

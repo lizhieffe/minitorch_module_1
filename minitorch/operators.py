@@ -91,8 +91,17 @@ def inv(a: float) -> float:
 
 
 # - inv_back
-def inv_back(a, b):
-    return -(1.0 / a**2) * b
+def inv_back(a, b_output):
+    """The backprop eq for inv().
+
+    Args:
+      a: the value in the forward inv().
+      b_output: the derivative that to backprop from the next layer.
+
+    Returns:
+      The derivative that to backprop to the previous layer. 
+    """
+    return -(1.0 / a**2) * b_output
 
 
 # - relu_back

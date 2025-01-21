@@ -30,26 +30,36 @@ class Module:
         return list(m.values())
 
     def train(self) -> None:
-        "Set the mode of this module and all descendent modules to `train`."
-        raise NotImplementedError("Need to include this file from past assignment.")
+        """Set the mode of this module and all descendent modules to `train`."""
+        self.training = True
+        for m in self._modules.values():
+            m.train()
 
     def eval(self) -> None:
-        "Set the mode of this module and all descendent modules to `eval`."
-        raise NotImplementedError("Need to include this file from past assignment.")
+        """Set the mode of this module and all descendent modules to `eval`."""
+        self.training = False
+        for m in self._modules.values():
+            m.eval()
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
-        """
-        Collect all the parameters of this module and its descendents.
+        """Collect all the parameters of this module and its descendents.
 
-
-        Returns:
+        Returns
+        -------
             The name and `Parameter` of each ancestor parameter.
+
         """
-        raise NotImplementedError("Need to include this file from past assignment.")
+        params = [(k, v) for k, v in self._parameters.items()]
+        for m_name, m in self._modules.items():
+            params.extend([(m_name + "." + k, v) for k, v in m.named_parameters()])
+        return params
 
     def parameters(self) -> Sequence[Parameter]:
-        "Enumerate over all the parameters of this module and its descendents."
-        raise NotImplementedError("Need to include this file from past assignment.")
+        """Enumerate over all the parameters of this module and its descendents."""
+        params = list(self._parameters.values())
+        for m in self._modules.values():
+            params.extend(m.parameters())
+        return params
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """

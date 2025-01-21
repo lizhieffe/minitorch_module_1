@@ -173,9 +173,10 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
-
         inputs = h.inputs
         derivs = h.last_fn.backward(h.ctx, d_output)
+        if not isinstance(derivs, Iterable):
+          derivs = (derivs, )
         return [(input, deriv) for input, deriv in zip(inputs, derivs)]
 
     def backward(self, d_output: Optional[float] = None) -> None:
@@ -186,8 +187,12 @@ class Scalar:
             d_output (number, opt): starting derivative to backpropagate through the model
                                    (typically left out, and assumed to be 1.0).
         """
+
+        # This happens for the very last node (loss) in the graph, where there is no
+        # next layer to provide derivate to backprop to previous layers.
         if d_output is None:
             d_output = 1.0
+
         backpropagate(self, d_output)
 
 
